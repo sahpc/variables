@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+    @model ClientesModel
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+
+<div class="row">
+    <div class="display-4">
+            <label for="nombre"> El Nombre es:></label> @Model.Nombre
+            <br />
+
+             <label for="nombre="> El Nombre es:></label> @Model.Apellido
+
+    </div>
+    
+    <div class="row">
+        <div class="container-fluid">
+            <form action="/Home/Index" method="get">
+                <h1>Ingreso de Clientes</h1>
+            <div class="col-lg-3">
+                <label>Cedula</label>
+                <input type="text" class="form-control" name="cedula" value="" placeholder="Ingrece su CI" />
+
+            </div>
+        
+    
+            <div class="row">
+                <div class="container-fluid">
+                    <div class="col-lg-3">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control" name="Nombre" value="" placeholder="Ingrece su nombre" />
+
+                    </div>
+           
+                    <div class="row">
+                        <div class="container-fluid">
+                            <div class="col-lg-3">
+                                <label>Apellido</label>
+                                    <input type="text" class="form-control" name="Apellido" value="" placeholder="Ingrece su apellido" />
+
+                            </div>
+
+                            <div class="row">
+                                <div class="container-fluid">
+                                    <div class="col-lg-3">
+                                        <label>Edad</label>
+                                            <input type="text" class="form-control" name="Edad" value="" placeholder="Ingrece su edad" />
+
+                                    </div>
+
+
+                                    <div class="row">
+                                        <button type="submit" class="btn btn-outline-success">Guardar</button>
+
+                                     </div>
+                                 </form>
+        </div>
+        </div>
+    </div>
+
+</div>
+<!--
+
+MVC
+controladores => acciones(METODOS) Task  ActionResult  IActionResult
+puerto 7257
+-->
+https://loalhost:7257
+https://loalhost:7257/controlador/accion/id
+https://loalhost:7257/controlador/accion/privacy

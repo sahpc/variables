@@ -1,90 +1,73 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
+using variables.Data;
 using variables.Models;
 
 namespace variables.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private static List<ClientesModel> _listaCliente = new List<ClientesModel>(); // Lista estática
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            _context = context;
+        }
+        [HttpGet]
+        public async Task< IActionResult> Index()
+        {
+            var clientes = _context.Clientes.ToList();
+            return View(await _context.Clientes.ToListAsync());
+        }
+        [HttpGet]
 
-            // Solo inicializa la lista si está vacía
-            if (!_listaCliente.Any())
-            {
-                for (int i = 1; i <= 10; i++)
-                {
-                    _listaCliente.Add(new ClientesModel
-                    {
-                        Id = i,
-                        Apellido = $"Apellido {i}",
-                        Cedula_Ruc = $"180000000{i}",
-                        Direccion = "Ambato",
-                        Edad = 18 + i,
-                        Genero = true,
-                        Nombre = $"Cliente {i}",
-                        Telefono = $"09876543{i}"
-                    });
-                }
-            }
+        public IActionResult Crear()
+        {
+            return View();
         }
 
-        public IActionResult Index()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Crear(ClientesModel cliente)
         {
-            return View(_listaCliente);
+            if (ModelState.IsValid)
+            {
+                _context.Clientes.Add(cliente);
+              await  _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        public IActionResult Editar(int id)
+        {
+            var cliente = _context.Clientes.Find(id);
+            if (cliente == null) return NotFound();
+            return View(cliente);
+        }
+
+        [HttpPost]
+        public IActionResult Editar(ClientesModel cliente)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Clientes.Update(cliente);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(cliente);
         }
 
         public IActionResult Eliminar(int id)
         {
-            var cliente = _listaCliente.FirstOrDefault(c => c.Id == id);
+            var cliente = _context.Clientes.Find(id);
             if (cliente != null)
             {
-                _listaCliente.Remove(cliente);
+                _context.Clientes.Remove(cliente);
+                _context.SaveChanges();
             }
-            return RedirectToAction("Index"); // Redirige para mostrar la lista actualizada
-        }
-
-        [HttpPost]
-        public IActionResult Actualizar(ClientesModel clienteActualizado)
-        {
-            var cliente = _listaCliente.FirstOrDefault(c => c.Id == clienteActualizado.Id);
-            if (cliente != null)
-            {
-                cliente.Nombre = clienteActualizado.Nombre;
-                cliente.Apellido = clienteActualizado.Apellido;
-                cliente.Cedula_Ruc = clienteActualizado.Cedula_Ruc;
-                cliente.Edad = clienteActualizado.Edad;
-                cliente.Telefono = clienteActualizado.Telefono;
-            }
-            return RedirectToAction("Index"); // Redirige para mostrar la lista actualizada
-        }
-
-        public IActionResult Privacy(string nombre, string apellido, int edad, int? estado)
-        {
-            int _estado = estado == null ? 0 : (int)estado;
-
-            var cliente = new ClientesModel
-            {
-                Apellido = apellido,
-                Cedula_Ruc = "1803971373011",
-                Direccion = "Ambato",
-                Edad = edad,
-                Genero = true,
-                Nombre = nombre,
-                Telefono = "098765432",
-                Id = 1
-            };
-            return View(cliente);
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return RedirectToAction("Index");
         }
     }
 }

@@ -1,106 +1,77 @@
-﻿@{
-    @model List<ClientesModel>
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<variables.Models.ClientesModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4"> Hola Mundo</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-
-
-    <a href="/Home/Privacy?nombre=Juan+Luis&apellido=Llerena&edad=36">Politicas de Privacidad </a>
-
-</div>
+<h1>Index</h1>
 
 <div class="row">
-    <h2>Lista de Clientes</h2>
-    <table class="table table-bordered table-responsive">
-        <thead>
+    <div class="offset-9 col-3 mb-3"
+        <a asp-action="Crear" asp-controller="Inicio" class="btn btn-secondary  d-block m-auto btn-lg">
+            <i class=" fa fa-plus" aria-hidden="true"></i>Nuevo Usuario
+        </a>
+    </div>
+</div>
+
+
+
+<p>
+    <a asp-action="Crear">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Cedula_Ruc)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Direccion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Edad)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>cedula</th>
-                <th>Nombres</th>
-                <th>Apellido</th>
-                <th>Edad</th>
-                <th>Acciones</th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cedula_Ruc)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Direccion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Edad)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
             </tr>
-        </thead>
-
-        <tbody>
-
-            @foreach (var cliente in Model)
-            {
-                <tr>
-                    <td>@cliente.Cedula_Ruc</td>
-                    <td>@cliente.Nombre</td>
-                    <td>@cliente.Apellido</td>
-                    <td>@cliente.Edad</td>
-
-                    <td>
-                        <a href="@Url.Action("Eliminar", "Home", new { id = cliente.Id })"
-                           class="btn btn-danger btn-sm"
-                           onclick="return confirm('¿Eliminar este cliente?');">Delete
-                            
-                        </a>
-
-                        <button class="btn btn-warning btn-sm btn-editar"
-                                data-id="@cliente.Id"
-                                data-nombre="@cliente.Nombre"
-                                data-apellido="@cliente.Apellido"
-                                data-cedula="@cliente.Cedula_Ruc"
-                                data-edad="@cliente.Edad">Edit
-                        </button>
-                     </td>
-                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-
-<!-- Modal simple para editar cliente -->
-<div id="modalEditar" style="display: none;">
-    <form method="post" action="@Url.Action("Actualizar", "Home")">
-        <input type="hidden" id="clienteId" name="Id" />
-        <label>Nombre:</label>
-        <input type="text" id="nombre" name="Nombre" required />
-        <label>Apellido:</label>
-        <input type="text" id="apellido" name="Apellido" required />
-        <label>Cédula:</label>
-        <input type="text" id="cedula" name="Cedula_Ruc" required />
-        <label>Edad:</label>
-        <input type="number" id="edad" name="Edad" required />
-        <button type="submit">Guardar</button>
-        <button type="button" onclick="cerrarModal()">Cancelar</button>
-    </form>
-</div>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".btn-editar").forEach(button => {
-            button.addEventListener("click", function () {
-                document.getElementById("clienteId").value = this.dataset.id;
-                document.getElementById("nombre").value = this.dataset.nombre;
-                document.getElementById("apellido").value = this.dataset.apellido;
-                document.getElementById("cedula").value = this.dataset.cedula;
-                document.getElementById("edad").value = this.dataset.edad;
-                document.getElementById("modalEditar").style.display = "block";
-            });
-        });
-    });
-
-    function cerrarModal() {
-        document.getElementById("modalEditar").style.display = "none";
-    }
-</script>
-
-<!--
-    PAGINAS WEB CSHTML
-    GET URL
-    mipagina.com?x=Luis
-
-    mipagina.com?nombre=Luis&apellido=Llerena&
-    POST
-
-    APIS
-
--->
+        }
+    </tbody>
+</table>
